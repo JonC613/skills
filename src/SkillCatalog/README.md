@@ -22,6 +22,12 @@ npm run dev
 
 Open `http://localhost:5173`. Vite proxies `/api` to the API. If the API port changes, update `web/vite.config.ts`.
 
+### Run the full local stack with Docker
+
+From `src/SkillCatalog`, run `docker compose up --build`. This starts PostgreSQL, applies the GitHub-submission migration, runs the API at `http://localhost:5102`, and serves the web app at `http://localhost:5173`. Named Docker volumes retain local database state and data-protection keys across restarts. Use `docker compose down` to stop the stack; add `--volumes` only when you intentionally want to discard local submission state.
+
+The local stack does not include GitHub credentials. Catalog browsing and package validation work without them. To test GitHub App sign-in or webhooks, expose the API through an HTTPS tunnel, register that tunnel URL with the GitHub App, and set the matching `GitHubSubmission__AllowedOrigins__0` value.
+
 ## Configuration
 
 `SkillCatalog` in `api/SkillCatalog.Api/appsettings.json` controls the repository root, source URL, maximum preview size, and maximum file size permitted in an archive. At startup the API locates the nearest Git repository containing `plugins/`, parses each `SKILL.md`, and atomically exposes the resulting in-memory snapshot.
